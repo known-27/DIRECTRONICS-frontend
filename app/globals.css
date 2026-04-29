@@ -1,0 +1,477 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Theme Tokens ────────────────────────────────────────────────────────── */
+/*
+  All colors go through CSS variables so a single .dark / .light class on <html>
+  switches every component automatically — no Tailwind dark: prefix needed.
+*/
+
+@layer base {
+
+  /* ── Dark theme (default) ── */
+  .dark,
+  :root {
+    --bg-base: #020617;
+    /* slate-950 */
+    --bg-surface: #0f172a;
+    /* slate-900 */
+    --bg-elevated: #1e293b;
+    /* slate-800 */
+    --bg-muted: #334155;
+    /* slate-700 */
+
+    --border-base: #1e293b;
+    /* slate-800 */
+    --border-muted: #334155;
+    /* slate-700 */
+
+    --text-primary: #f1f5f9;
+    /* slate-100 */
+    --text-secondary: #cbd5e1;
+    /* slate-300 */
+    --text-muted: #94a3b8;
+    /* slate-400 */
+    --text-faint: #64748b;
+    /* slate-500 */
+
+    --scrollbar-track: #0f172a;
+    --scrollbar-thumb: #334155;
+    --scrollbar-thumb-hover: #475569;
+
+    --modal-overlay: rgba(2, 6, 23, 0.85);
+  }
+
+  /* ── Light theme ── */
+  .light {
+    --bg-base: #f8fafc;
+    /* slate-50 */
+    --bg-surface: #ffffff;
+    /* white */
+    --bg-elevated: #f1f5f9;
+    /* slate-100 */
+    --bg-muted: #e2e8f0;
+    /* slate-200 */
+
+    --border-base: #e2e8f0;
+    /* slate-200 */
+    --border-muted: #cbd5e1;
+    /* slate-300 */
+
+    --text-primary: #0f172a;
+    /* slate-900 */
+    --text-secondary: #1e293b;
+    /* slate-800 */
+    --text-muted: #475569;
+    /* slate-600 */
+    --text-faint: #64748b;
+    /* slate-500 */
+
+    --scrollbar-track: #f1f5f9;
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-thumb-hover: #94a3b8;
+
+    --modal-overlay: rgba(15, 23, 42, 0.6);
+  }
+
+  * {
+    border-color: var(--border-base);
+  }
+
+  html {
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    @apply antialiased transition-colors duration-200;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+
+  /* ─── Light mode: override hardcoded Tailwind slate text colours ─────────
+     Many components use text-slate-{400,500,600} directly.
+     In light mode these are too close to the white background, so we
+     remap them to noticeably darker values without touching every file.
+  ──────────────────────────────────────────────────────────────────────── */
+  .light .text-slate-100,
+  .light .text-slate-200 {
+    color: #0f172a !important;
+  }
+
+  /* near-black */
+
+  .light .text-slate-300 {
+    color: #1e293b !important;
+  }
+
+  /* slate-800  */
+
+  .light .text-slate-400 {
+    color: #334155 !important;
+  }
+
+  /* slate-700  */
+
+  .light .text-slate-500 {
+    color: #475569 !important;
+  }
+
+  /* slate-600  */
+
+  .light .text-slate-600 {
+    color: #475569 !important;
+  }
+
+  /* slate-600  */
+
+  /* Keep accent colours untouched in light mode */
+  .light .text-blue-400 {
+    color: #1d4ed8;
+  }
+
+  .light .text-blue-500 {
+    color: #1d4ed8;
+  }
+
+  .light .text-emerald-400 {
+    color: #047857;
+  }
+
+  .light .text-emerald-500 {
+    color: #047857;
+  }
+
+  .light .text-red-400 {
+    color: #b91c1c;
+  }
+
+  .light .text-red-500 {
+    color: #b91c1c;
+  }
+
+  .light .text-amber-400 {
+    color: #b45309;
+  }
+
+  .light .text-amber-600 {
+    color: #b45309;
+  }
+
+  /* Background overrides for hardcoded slate-* backgrounds */
+  .light .bg-slate-900 {
+    background-color: #ffffff !important;
+  }
+
+  .light .bg-slate-800 {
+    background-color: #f1f5f9 !important;
+  }
+
+  .light .bg-slate-800\/40 {
+    background-color: rgba(241, 245, 249, 0.6) !important;
+  }
+
+  .light .bg-slate-800\/60 {
+    background-color: rgba(241, 245, 249, 0.8) !important;
+  }
+
+  .light .bg-slate-950 {
+    background-color: #f8fafc !important;
+  }
+
+  .light .bg-slate-900\/80 {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  /* Border overrides */
+  .light .border-slate-800 {
+    border-color: #e2e8f0 !important;
+  }
+
+  .light .border-slate-700 {
+    border-color: #cbd5e1 !important;
+  }
+
+}
+
+/* ─── Component Layer ─────────────────────────────────────────────────────── */
+
+@layer components {
+
+  /* ── Card ── */
+  .card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-base);
+    @apply rounded-xl p-6 transition-colors duration-200;
+  }
+
+  .card-sm {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-base);
+    @apply rounded-lg p-4 transition-colors duration-200;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-blue-600 text-white hover:bg-blue-500 focus:ring-blue-500 focus:ring-offset-transparent active:scale-95;
+  }
+
+  .btn-secondary {
+    border: 1px solid var(--border-muted);
+    background-color: var(--bg-elevated);
+    color: var(--text-secondary);
+    @apply btn hover:opacity-80 focus:ring-slate-500 focus:ring-offset-transparent;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600/20 text-red-500 hover:bg-red-600/30 border border-red-500/40 focus:ring-red-500 focus:ring-offset-transparent;
+  }
+
+  .btn-success {
+    @apply btn bg-emerald-600/20 text-emerald-500 hover:bg-emerald-600/30 border border-emerald-500/40 focus:ring-emerald-500 focus:ring-offset-transparent;
+  }
+
+  .btn-ghost {
+    color: var(--text-muted);
+    @apply btn bg-transparent hover:bg-[var(--bg-elevated)] focus:ring-slate-500 focus:ring-offset-transparent;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs rounded-md;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /* ── Form Elements ── */
+  .input {
+    width: 100%;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-muted);
+    color: var(--text-primary);
+    @apply rounded-lg px-4 py-2.5 text-sm transition-colors placeholder:text-[color:var(--text-faint)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500;
+  }
+
+  .input-error {
+    @apply border-red-500/70 focus:ring-red-500/50 focus:border-red-500;
+  }
+
+  .label {
+    color: var(--text-muted);
+    @apply block text-sm font-medium mb-1.5;
+  }
+
+  .error-msg {
+    @apply text-xs text-red-500 mt-1;
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer;
+  }
+
+  .textarea {
+    @apply input resize-none;
+  }
+
+  /* ── Table ── */
+  .table-wrapper {
+    border: 1px solid var(--border-base);
+    @apply overflow-x-auto rounded-xl;
+  }
+
+  .table {
+    @apply w-full text-sm;
+  }
+
+  .table thead {
+    background-color: var(--bg-elevated);
+  }
+
+  .table thead th {
+    color: var(--text-muted);
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap;
+  }
+
+  .table tbody tr {
+    border-top: 1px solid var(--border-base);
+    @apply transition-colors;
+  }
+
+  .table tbody tr:hover {
+    background-color: var(--bg-elevated);
+  }
+
+  .table tbody td {
+    color: var(--text-secondary);
+    @apply px-4 py-3 whitespace-nowrap;
+  }
+
+  /* ── Badge / Pill ── */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  /* Badges use fixed accent colors — they look great in both themes */
+  .badge-blue {
+    @apply badge bg-blue-500/15 text-blue-500 border border-blue-500/30;
+  }
+
+  .badge-green {
+    @apply badge bg-emerald-500/15 text-emerald-500 border border-emerald-500/30;
+  }
+
+  .badge-yellow {
+    @apply badge bg-amber-500/15 text-amber-600 border border-amber-500/30;
+  }
+
+  .badge-amber {
+    @apply badge bg-orange-500/15 text-orange-500 border border-orange-500/30;
+  }
+
+  .badge-red {
+    @apply badge bg-red-500/15 text-red-500 border border-red-500/30;
+  }
+
+  .badge-gray {
+    @apply badge bg-slate-500/15 text-slate-500 border border-slate-500/30;
+  }
+
+  .badge-purple {
+    @apply badge bg-purple-500/15 text-purple-500 border border-purple-500/30;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    background: var(--modal-overlay);
+    @apply fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm p-4;
+  }
+
+  .modal {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-base);
+    @apply rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid var(--border-base);
+    @apply flex items-center justify-between p-6;
+  }
+
+  .modal-body {
+    @apply p-6;
+  }
+
+  .modal-footer {
+    border-top: 1px solid var(--border-base);
+    @apply flex justify-end gap-3 p-6;
+  }
+
+  /* ── KPI Card ── */
+  .kpi-card {
+    @apply card flex flex-col gap-2;
+    transition: border-color 0.15s;
+  }
+
+  .kpi-card:hover {
+    border-color: var(--border-muted);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar-link {
+    color: var(--text-muted);
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all;
+  }
+
+  .sidebar-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+  }
+
+  .sidebar-link.active {
+    @apply text-blue-500 bg-blue-500/10 border border-blue-500/20;
+  }
+
+  /* ── Page heading ── */
+  .page-title {
+    color: var(--text-primary);
+    @apply text-2xl font-bold;
+  }
+
+  .page-subtitle {
+    color: var(--text-muted);
+    @apply text-sm mt-1;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    border-top: 1px solid var(--border-base);
+    @apply my-6;
+  }
+}
+
+/* ─── Utility Layer ───────────────────────────────────────────────────────── */
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent;
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.25s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
