@@ -15,7 +15,6 @@
  */
 
 import React from 'react';
-import { useProtectedFile } from '@/hooks/useProtectedFile';
 
 type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -70,10 +69,6 @@ export const ProfileAvatar = ({
   const initials = getInitials(fullName || 'User');
   const bgColor  = nameToHsl(fullName || 'User');
 
-  const { objectUrl, loading } = useProtectedFile(
-    profilePictureUrl ?? null,
-  );
-
   const baseStyle: React.CSSProperties = {
     width:          px,
     height:         px,
@@ -90,24 +85,14 @@ export const ProfileAvatar = ({
     userSelect:     'none',
   };
 
-  if (loading) {
-    return (
-      <div
-        className={`animate-pulse ${className}`}
-        style={{ ...baseStyle, backgroundColor: 'var(--bg-elevated, #1e293b)' }}
-        aria-hidden="true"
-      />
-    );
-  }
-
-  if (objectUrl) {
+  if (profilePictureUrl) {
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
-        src={objectUrl}
+        src={profilePictureUrl}
         alt={fullName}
         className={className}
-        style={{ ...baseStyle }}
+        style={{ ...baseStyle, objectFit: 'cover' }}
         onError={(e) => {
           // Fall back to initials on render error
           (e.currentTarget as HTMLImageElement).style.display = 'none';

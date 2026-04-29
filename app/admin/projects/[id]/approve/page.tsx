@@ -9,7 +9,6 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { LoadingSpinner, ErrorState } from '@/components/ui/LoadingStates';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
-import { useProtectedFile } from '@/hooks/useProtectedFile';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import {
   ArrowLeft, CheckCircle, Calculator, HandCoins, Info,
@@ -42,8 +41,9 @@ export default function ApproveProjectPage(): React.ReactElement {
 
   const project = data?.data;
 
-  // Pass the relative DB path directly — useProtectedFile fetches via authenticated axios
-  const { objectUrl: jobCardUrl, loading: imageLoading } = useProtectedFile(project?.completionImageUrl ?? null);
+  // Cloudinary URL is stored directly in the DB
+  const jobCardUrl = project?.completionImageUrl ?? null;
+  const imageLoading = false; // We can keep this variable to avoid changing the JSX below, or just set it false
 
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<ApproveForm>({
     defaultValues: {

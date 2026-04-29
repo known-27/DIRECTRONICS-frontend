@@ -3,7 +3,6 @@
 import React from 'react';
 import { X, FileText, ExternalLink } from 'lucide-react';
 import { Modal } from './Modal';
-import { useProtectedFile } from '@/hooks/useProtectedFile';
 
 interface DocumentViewerProps {
   /** The relative URL path stored in the DB, e.g. /uploads/identity-docs/userId/filename.jpg */
@@ -22,9 +21,6 @@ function isPdfPath(url: string): boolean {
 }
 
 export const DocumentViewer: React.FC<DocumentViewerProps> = ({ apiPath, label, isOpen, onClose }) => {
-  // Only fetch when the modal is open to avoid unnecessary requests
-  const { objectUrl, loading, error } = useProtectedFile(isOpen ? apiPath : null);
-
   return (
     <Modal
       isOpen={isOpen}
@@ -32,9 +28,9 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({ apiPath, label, 
       title={label}
       footer={
         <div className="flex gap-2">
-          {objectUrl && (
+          {apiPath && (
             <a
-              href={objectUrl}
+              href={apiPath}
               download
               target="_blank"
               rel="noopener noreferrer"
@@ -50,31 +46,18 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({ apiPath, label, 
       }
     >
       <div className="w-full" style={{ minHeight: '60vh' }}>
-        {loading && (
-          <div className="flex items-center justify-center h-64">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading document...</p>
-            </div>
-          </div>
-        )}
-        {error && !loading && (
-          <div className="flex items-center justify-center h-64">
-            <p className="text-sm text-red-400">{error}</p>
-          </div>
-        )}
-        {objectUrl && !loading && apiPath && (
+        {apiPath && (
           <>
             {isImagePath(apiPath) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={objectUrl}
+                src={apiPath}
                 alt={label}
                 className="w-full h-auto rounded-lg object-contain max-h-[70vh]"
               />
             ) : isPdfPath(apiPath) ? (
               <iframe
-                src={objectUrl}
+                src={apiPath}
                 title={label}
                 className="w-full rounded-lg"
                 style={{ height: '70vh', border: 'none' }}
@@ -85,7 +68,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({ apiPath, label, 
                 <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                   Preview not available for this file type.
                 </p>
-                <a href={objectUrl} download className="btn-primary">
+                <a href={apiPath} download className="btn-primary">
                   Download File
                 </a>
               </div>

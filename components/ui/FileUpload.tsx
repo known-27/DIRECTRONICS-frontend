@@ -2,7 +2,6 @@
 
 import React, { useRef, useState } from 'react';
 import { Upload, X, Loader2, CheckCircle } from 'lucide-react';
-import { useProtectedFile } from '@/hooks/useProtectedFile';
 
 interface FileUploadProps {
   accept:       string;
@@ -17,28 +16,6 @@ interface FileUploadProps {
   previewType?: 'image' | 'document';
   onUpload:     (file: File) => Promise<string>; // Returns URL after upload
   disabled?:    boolean;
-}
-
-/**
- * Sub-component that renders the "current server-side image" via the protected
- * file hook (blob URL). Used only when there is no local preview yet.
- */
-function ProtectedPreview({ url }: { url: string }) {
-  const { objectUrl, loading } = useProtectedFile(url);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center gap-2 py-2">
-        <Loader2 size={24} className="animate-spin" style={{ color: 'var(--accent-primary)' }} />
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading image…</span>
-      </div>
-    );
-  }
-
-  if (!objectUrl) return null;
-
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={objectUrl} alt="Current" className="h-24 w-24 rounded-full object-cover mx-auto" />;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -124,9 +101,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           </div>
 
         ) : hasServerFile && previewType === 'image' ? (
-          // Existing server image — fetched via authenticated axios
+          // Existing server image — public Cloudinary URL
           <div className="relative inline-block">
-            <ProtectedPreview url={currentUrl!} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={currentUrl!} alt="Current" className="h-24 w-24 rounded-full object-cover mx-auto" />
             {uploaded && (
               <CheckCircle size={18} className="absolute bottom-0 right-0 text-emerald-400 bg-white rounded-full" />
             )}
