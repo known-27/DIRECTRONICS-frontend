@@ -9,7 +9,7 @@ import { Modal } from '@/components/ui/Modal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { LoadingSpinner, EmptyState, ErrorState } from '@/components/ui/LoadingStates';
 
-import { Plus, Users, ChevronRight, X, ExternalLink } from 'lucide-react';
+import { Plus, Users, ChevronRight, X, ExternalLink, User, Wrench } from 'lucide-react';
 import { PasswordInput } from '@/components/ui/PasswordInput';
 import Link from 'next/link';
 import type { User, Service, Formula, UserDetail } from '@/types';
@@ -175,11 +175,11 @@ export default function EmployeesPage(): React.ReactElement {
                     </td>
                     <td>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setDetailUserId(u.id)} className="btn-ghost btn-sm">
-                          <ChevronRight size={16} />
+                        <button onClick={() => setDetailUserId(u.id)} className="btn-secondary btn-sm flex items-center gap-1.5">
+                          <Wrench size={14} /> Services
                         </button>
-                        <Link href={`/admin/employees/${u.id}/profile`} className="btn-ghost btn-sm">
-                          <ExternalLink size={14} />
+                        <Link href={`/admin/employees/${u.id}/profile`} className="btn-secondary btn-sm flex items-center gap-1.5">
+                          <User size={14} /> Profile
                         </Link>
                         <button
                           onClick={() => toggleMutation.mutate({ id: u.id, isActive: !u.isActive })}
@@ -254,7 +254,7 @@ export default function EmployeesPage(): React.ReactElement {
                 <option value="AADHAR">Aadhar</option>
                 <option value="PAN">PAN</option>
               </select></div>
-            <div><label className="label">Static Salary (â‚¹)</label>
+            <div><label className="label">Static Salary (₹)</label>
               <input type="number" min="0" step="0.01" className="input" placeholder="0.00"
                 {...register('staticSalary')} /></div>
           </div>
@@ -296,7 +296,7 @@ export default function EmployeesPage(): React.ReactElement {
               </div>
               <div className="ml-auto text-right">
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Earned</p>
-                <p className="text-xl font-bold text-emerald-400">â‚¹{Number(userDetail.totalEarned).toLocaleString()}</p>
+                <p className="text-xl font-bold text-emerald-400">₹{Number(userDetail.totalEarned).toLocaleString()}</p>
                 <Link href={`/admin/employees/${userDetail.id}/profile`} className="text-xs underline mt-1 block"
                   style={{ color: 'var(--accent-primary)' }}>
                   Full Profile â†’

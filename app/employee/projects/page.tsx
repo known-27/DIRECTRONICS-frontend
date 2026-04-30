@@ -13,10 +13,11 @@ import { FolderKanban, Plus, Trash2, Eye, Pencil, ChevronLeft, ChevronRight } fr
 import Link from 'next/link';
 import type { Project, Service, PaginatedData, FilterState } from '@/types';
 import { formatCurrency } from '@/lib/formatCurrency';
+import { useFilterState } from '@/hooks/useFilterState';
 
 export default function EmployeeProjectsPage(): React.ReactElement {
   const qc = useQueryClient();
-  const [filters, setFilters]       = useState<FilterState>({ page: '1', limit: '20' });
+  const [filters, setFilters, clearFilters] = useFilterState('emp_projects');
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
 
   const { data, isLoading } = useQuery<{ data: PaginatedData<Project> }>({
@@ -66,7 +67,7 @@ export default function EmployeeProjectsPage(): React.ReactElement {
         <FilterBar
           filters={filters}
           onChange={setFilters}
-          onClear={() => setFilters({ page: '1', limit: '20' })}
+          onClear={clearFilters}
           statusOptions={['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'PAID'].map(s => ({ value: s, label: s }))}
           services={services.map(s => ({ value: s.id, label: s.name }))}
         />

@@ -13,10 +13,11 @@ import { FolderKanban, Eye, CheckSquare, XSquare, ChevronLeft, ChevronRight } fr
 import Link from 'next/link';
 import type { Project, User, Service, PaginatedData, FilterState } from '@/types';
 import type { AxiosError } from 'axios';
+import { useFilterState } from '@/hooks/useFilterState';
 
 export default function AdminProjectsPage(): React.ReactElement {
   const qc = useQueryClient();
-  const [filters, setFilters] = useState<FilterState>({ page: '1', limit: '20' });
+  const [filters, setFilters, clearFilters] = useFilterState('adm_projects');
   const [actionError, setActionError] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery<{ data: PaginatedData<Project> }>({
@@ -62,7 +63,7 @@ export default function AdminProjectsPage(): React.ReactElement {
         <FilterBar
           filters={filters}
           onChange={setFilters}
-          onClear={() => setFilters({ page: '1', limit: '20' })}
+          onClear={clearFilters}
           statusOptions={['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'PAID'].map(s => ({ value: s, label: s }))}
           employees={employees.map(e => ({ value: e.id, label: e.name }))}
           services={services.map(s => ({ value: s.id, label: s.name }))}

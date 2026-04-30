@@ -12,24 +12,25 @@ import { PaymentDrawer } from '@/components/payments/PaymentDrawer';
 import { CreditCard } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatCurrency';
 import type { Payment, User, PaginatedData, FilterState } from '@/types';
+import { useFilterState } from '@/hooks/useFilterState';
 
 export default function AdminPaymentsPage(): React.ReactElement {
   const qc = useQueryClient();
-  const [filters, setFilters]         = useState<FilterState>({ page: '1', limit: '20' });
-  const [activePayment, setActive]    = useState<Payment | null>(null);
+  const [filters, setFilters, clearFilters] = useFilterState('adm_payments');
+  const [activePayment, setActive] = useState<Payment | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery<{ data: PaginatedData<Payment> }>({
     queryKey: ['payments', filters],
-    queryFn:  () => paymentsApi.list(filters).then((r) => r.data),
+    queryFn: () => paymentsApi.list(filters).then((r) => r.data),
   });
 
   const { data: usersData } = useQuery<{ data: User[] }>({
     queryKey: ['users'],
-    queryFn:  () => usersApi.list().then((r) => r.data),
+    queryFn: () => usersApi.list().then((r) => r.data),
   });
 
-  const result    = data?.data;
-  const payments  = result?.data ?? [];
+  const result = data?.data;
+  const payments = result?.data ?? [];
   const employees = usersData?.data?.filter(u => u.role === 'EMPLOYEE') ?? [];
   const currentPage = Number(filters.page ?? 1);
   const setPage = (p: number) => setFilters(f => ({ ...f, page: String(p) }));
@@ -66,7 +67,7 @@ export default function AdminPaymentsPage(): React.ReactElement {
         <FilterBar
           filters={filters}
           onChange={setFilters}
-          onClear={() => setFilters({ page: '1', limit: '20' })}
+          onClear={clearFilters}
           statusOptions={['PENDING', 'PARTIAL', 'PAID', 'CANCELLED'].map(s => ({ value: s, label: s }))}
           employees={employees.map(e => ({ value: e.id, label: e.name }))}
           showPaymentMode
@@ -129,7 +130,7 @@ export default function AdminPaymentsPage(): React.ReactElement {
             {result && result.totalPages > 1 && (
               <div className="flex items-center justify-between mt-4">
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  Showing {(currentPage - 1) * Number(filters.limit ?? 20) + 1}–{Math.min(currentPage * Number(filters.limit ?? 20), result.total)} of {result.total}
+                  Showing {(currentPage - 1) * Number(filters.limit ?? 20) + 1}-{Math.min(currentPage * Number(filters.limit ?? 20), result.total)} of {result.total}
                 </p>
                 <div className="flex gap-2">
                   {Array.from({ length: result.totalPages }, (_, i) => i + 1)
