@@ -135,17 +135,6 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
             </div>
           )}
 
-          {/* Formula Used */}
-          {project.formulaSnapshot && (
-            <div className="card">
-              <h2 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Formula Used (Snapshot)</h2>
-              <div className="bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 font-mono text-sm text-blue-300">
-                {project.formulaSnapshot.expression}
-              </div>
-              <p className="text-xs text-slate-600 mt-2">Captured at: {new Date(project.formulaSnapshot.snapshotAt).toLocaleString()}</p>
-            </div>
-          )}
-
           {/* Payment Info */}
           {project.payments && project.payments.length > 0 && (
           <div className="card">
