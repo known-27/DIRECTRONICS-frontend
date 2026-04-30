@@ -8,7 +8,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { LoadingSpinner, ErrorState } from '@/components/ui/LoadingStates';
 import { ProfileAvatar } from '@/components/ui/ProfileAvatar';
-import { FolderKanban, CheckCircle, Wallet, Plus, ArrowDownCircle } from 'lucide-react';
+import { FolderKanban, CheckCircle, Wallet, Plus, ArrowDownCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/formatCurrency';
 import type { EmployeeDashboard } from '@/types';
@@ -71,6 +71,30 @@ export default function EmployeeDashboard(): React.ReactElement {
               <KPICard title="Approved Projects" value={dashboard.kpis.approvedProjects}             icon={CheckCircle}     color="bg-emerald-500/10 text-emerald-400" />
               <KPICard title="Total Calculated"  value={formatCurrency(dashboard.kpis.totalEarned)}  icon={Wallet}          color="bg-purple-500/10 text-purple-400" />
               <KPICard title="Received"           value={formatCurrency(dashboard.kpis.totalReceived)} icon={ArrowDownCircle} color="bg-emerald-500/10 text-emerald-400" />
+            </div>
+
+            {/* Pending to Receive — scoped to PENDING + PARTIAL payments only */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div className="kpi-card col-span-1 sm:col-span-2 xl:col-span-2" style={{ background: dashboard.kpis.totalPendingToReceive === 0 ? undefined : 'rgba(251,191,36,0.05)', borderColor: dashboard.kpis.totalPendingToReceive === 0 ? undefined : 'rgba(251,191,36,0.15)' }}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Pending to Receive</p>
+                    <p className={`text-3xl font-bold mt-2 ${
+                      dashboard.kpis.totalPendingToReceive === 0 ? 'text-emerald-400' : 'text-amber-400'
+                    }`}>
+                      {formatCurrency(dashboard.kpis.totalPendingToReceive)}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {dashboard.kpis.totalPendingToReceive === 0 ? 'All payments received' : 'across pending projects'}
+                    </p>
+                  </div>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    dashboard.kpis.totalPendingToReceive === 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+                  }`}>
+                    <Clock size={20} />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Status Breakdown */}

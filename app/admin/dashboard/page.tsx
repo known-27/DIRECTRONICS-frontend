@@ -12,7 +12,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import {
-  FolderKanban, Users, CreditCard, Clock, ArrowUpRight,
+  FolderKanban, Users, CreditCard, Clock, ArrowUpRight, AlertCircle,
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatCurrency';
 import type { AdminDashboard } from '@/types';
@@ -92,10 +92,39 @@ export default function AdminDashboard(): React.ReactElement {
               <KPICard
                 title="Total Paid Out"
                 value={formatCurrency(dashboard.kpis.totalPaidAmount)}
-                subtitle={`${formatCurrency(dashboard.kpis.totalPendingAmount)} outstanding`}
                 icon={CreditCard}
                 color="bg-purple-500/10 text-purple-400"
               />
+            </div>
+
+            {/* Total Pending to Pay — global outstanding liability */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div
+                className="kpi-card col-span-1 sm:col-span-2 xl:col-span-2"
+                style={{
+                  background:   dashboard.kpis.totalPendingToPay === 0 ? undefined : 'rgba(244,63,94,0.05)',
+                  borderColor:  dashboard.kpis.totalPendingToPay === 0 ? undefined : 'rgba(244,63,94,0.18)',
+                }}
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Pending to Pay</p>
+                    <p className={`text-3xl font-bold mt-2 ${
+                      dashboard.kpis.totalPendingToPay === 0 ? 'text-emerald-400' : 'text-rose-400'
+                    }`}>
+                      {formatCurrency(dashboard.kpis.totalPendingToPay)}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {dashboard.kpis.totalPendingToPay === 0 ? 'No outstanding payments' : 'outstanding across all employees'}
+                    </p>
+                  </div>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    dashboard.kpis.totalPendingToPay === 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'
+                  }`}>
+                    <AlertCircle size={20} />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Charts + Top Employees */}

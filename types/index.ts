@@ -265,6 +265,7 @@ export interface AdminDashboard {
     partialPaymentsCount:   number;
     totalPaidAmount:        number;
     totalPendingAmount:     number;
+    totalPendingToPay:      number;
   };
   pendingReviewCount:   number;
   projectsByStatus: Record<ProjectStatus, number>;
@@ -279,11 +280,12 @@ export interface AdminDashboard {
 
 export interface EmployeeDashboard {
   kpis: {
-    totalProjects:   number;
-    approvedProjects: number;
-    totalEarned:     number;
-    totalReceived:   number;
-    totalPending:    number;
+    totalProjects:         number;
+    approvedProjects:      number;
+    totalEarned:          number;
+    totalReceived:        number;
+    totalPending:         number;
+    totalPendingToReceive: number;
   };
   projectsByStatus: Record<string, number>;
   recentProjects:   Project[];
