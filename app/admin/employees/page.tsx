@@ -9,7 +9,7 @@ import { Modal } from '@/components/ui/Modal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { LoadingSpinner, EmptyState, ErrorState } from '@/components/ui/LoadingStates';
 
-import { Plus, Users, X, User, Wrench } from 'lucide-react';
+import { Plus, Users, X, User as UserIcon, Wrench } from 'lucide-react';
 import { PasswordInput } from '@/components/ui/PasswordInput';
 import Link from 'next/link';
 import type { User, Service, Formula, UserDetail } from '@/types';
@@ -18,33 +18,33 @@ import { ProtectedImage } from '@/components/ui/ProtectedImage';
 
 export default function EmployeesPage(): React.ReactElement {
   const qc = useQueryClient();
-  const [createOpen, setCreateOpen]     = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [detailUserId, setDetailUserId] = useState<string | null>(null);
-  const [assignOpen, setAssignOpen]     = useState(false);
-  const [apiError, setApiError]         = useState<string | null>(null);
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [passwordValue, setPasswordValue] = useState('');
 
   const { data: usersData, isLoading, error } = useQuery<{ data: User[] }>({
     queryKey: ['users'],
-    queryFn:  () => usersApi.list().then((r) => r.data),
+    queryFn: () => usersApi.list().then((r) => r.data),
   });
 
   const { data: userDetailData } = useQuery<{ data: UserDetail }>({
     queryKey: ['user', detailUserId],
-    queryFn:  () => usersApi.getById(detailUserId!).then((r) => r.data),
-    enabled:  !!detailUserId,
+    queryFn: () => usersApi.getById(detailUserId!).then((r) => r.data),
+    enabled: !!detailUserId,
   });
 
   const { data: servicesData } = useQuery<{ data: Service[] }>({
     queryKey: ['services'],
-    queryFn:  () => servicesApi.list(true).then((r) => r.data),
-    enabled:  assignOpen,
+    queryFn: () => servicesApi.list(true).then((r) => r.data),
+    enabled: assignOpen,
   });
 
   const { data: formulasData } = useQuery<{ data: Formula[] }>({
     queryKey: ['formulas'],
-    queryFn:  () => formulasApi.list().then((r) => r.data),
-    enabled:  assignOpen,
+    queryFn: () => formulasApi.list().then((r) => r.data),
+    enabled: assignOpen,
   });
 
   const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
@@ -100,16 +100,16 @@ export default function EmployeesPage(): React.ReactElement {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['user', detailUserId] }),
   });
 
-  const users      = usersData?.data ?? [];
+  const users = usersData?.data ?? [];
   const userDetail = userDetailData?.data;
 
   const handleCreateSubmit = (d: Record<string, unknown>) => {
     const payload = {
       ...d,
       identityDocType: d.identityDocType || undefined,
-      staticSalary:    d.staticSalary || undefined,
-      mobileNumber2:   d.mobileNumber2 || undefined,
-      address:         d.address || undefined,
+      staticSalary: d.staticSalary || undefined,
+      mobileNumber2: d.mobileNumber2 || undefined,
+      address: d.address || undefined,
       // identityDocUrl is NOT set here — must be uploaded from the profile page after creation
     };
     createMutation.mutate(payload);
@@ -179,7 +179,7 @@ export default function EmployeesPage(): React.ReactElement {
                           <Wrench size={14} /> Services
                         </button>
                         <Link href={`/admin/employees/${u.id}/profile`} className="btn-secondary btn-sm flex items-center gap-1.5">
-                          <User size={14} /> Profile
+                          <UserIcon size={14} /> Profile
                         </Link>
                         <button
                           onClick={() => toggleMutation.mutate({ id: u.id, isActive: !u.isActive })}

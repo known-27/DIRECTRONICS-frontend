@@ -39,7 +39,7 @@ export default function AdminProjectsPage(): React.ReactElement {
   const employees  = usersData?.data?.filter(u => u.role === 'EMPLOYEE') ?? [];
   const services   = servicesData?.data ?? [];
 
-  const setPage = (p: number) => setFilters(f => ({ ...f, page: String(p) }));
+  const setPage = (p: number) => setFilters({ ...filters, page: String(p) });
   const currentPage = Number(filters.page ?? 1);
 
   return (

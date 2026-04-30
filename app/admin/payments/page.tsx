@@ -33,7 +33,7 @@ export default function AdminPaymentsPage(): React.ReactElement {
   const payments = result?.data ?? [];
   const employees = usersData?.data?.filter(u => u.role === 'EMPLOYEE') ?? [];
   const currentPage = Number(filters.page ?? 1);
-  const setPage = (p: number) => setFilters(f => ({ ...f, page: String(p) }));
+  const setPage = (p: number) => setFilters({ ...filters, page: String(p) });
 
   const handleDrawerUpdate = (updated: Payment) => {
     // Optimistically patch the payment in the cache

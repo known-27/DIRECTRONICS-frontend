@@ -42,7 +42,7 @@ export default function EmployeeProjectsPage(): React.ReactElement {
   const projects = result?.data ?? [];
   const services = servicesData?.data ?? [];
   const currentPage = Number(filters.page ?? 1);
-  const setPage = (p: number) => setFilters(f => ({ ...f, page: String(p) }));
+  const setPage = (p: number) => setFilters({ ...filters, page: String(p) });
 
   return (
     <DashboardLayout>
