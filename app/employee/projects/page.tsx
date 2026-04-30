@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { projectsApi, servicesApi } from '@/lib/api';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -15,7 +15,7 @@ import type { Project, Service, PaginatedData } from '@/types';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useFilterState } from '@/hooks/useFilterState';
 
-export default function EmployeeProjectsPage(): React.ReactElement {
+function EmployeeProjectsContent(): React.ReactElement {
   const qc = useQueryClient();
   const [filters, setFilters, clearFilters] = useFilterState('emp_projects');
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
@@ -212,5 +212,13 @@ export default function EmployeeProjectsPage(): React.ReactElement {
         )}
       </Modal>
     </DashboardLayout>
+  );
+}
+
+export default function EmployeeProjectsPage(): React.ReactElement {
+  return (
+    <Suspense fallback={<LoadingSpinner text="Loading projects..." />}>
+      <EmployeeProjectsContent />
+    </Suspense>
   );
 }

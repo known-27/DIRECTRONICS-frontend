@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { projectsApi, usersApi, servicesApi } from '@/lib/api';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -15,7 +15,7 @@ import type { Project, User, Service, PaginatedData } from '@/types';
 import type { AxiosError } from 'axios';
 import { useFilterState } from '@/hooks/useFilterState';
 
-export default function AdminProjectsPage(): React.ReactElement {
+function AdminProjectsContent(): React.ReactElement {
   const qc = useQueryClient();
   const [filters, setFilters, clearFilters] = useFilterState('adm_projects');
   const [actionError, setActionError] = useState<string | null>(null);
@@ -174,5 +174,13 @@ export default function AdminProjectsPage(): React.ReactElement {
         )}
       </div>
     </DashboardLayout>
+  );
+}
+
+export default function AdminProjectsPage(): React.ReactElement {
+  return (
+    <Suspense fallback={<LoadingSpinner text="Loading projects..." />}>
+      <AdminProjectsContent />
+    </Suspense>
   );
 }

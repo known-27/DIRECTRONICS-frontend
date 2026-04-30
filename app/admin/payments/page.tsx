@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { paymentsApi, usersApi } from '@/lib/api';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -14,7 +14,7 @@ import { formatCurrency } from '@/lib/formatCurrency';
 import type { Payment, User, PaginatedData } from '@/types';
 import { useFilterState } from '@/hooks/useFilterState';
 
-export default function AdminPaymentsPage(): React.ReactElement {
+function AdminPaymentsContent(): React.ReactElement {
   const qc = useQueryClient();
   const [filters, setFilters, clearFilters] = useFilterState('adm_payments');
   const [activePayment, setActive] = useState<Payment | null>(null);
@@ -155,5 +155,13 @@ export default function AdminPaymentsPage(): React.ReactElement {
         />
       )}
     </DashboardLayout>
+  );
+}
+
+export default function AdminPaymentsPage(): React.ReactElement {
+  return (
+    <Suspense fallback={<LoadingSpinner text="Loading payments..." />}>
+      <AdminPaymentsContent />
+    </Suspense>
   );
 }
