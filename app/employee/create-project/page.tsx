@@ -157,18 +157,6 @@ export default function CreateProjectPage(): React.ReactElement {
             {/* Invoice Number */}
             <div>
               <label className="label">Invoice Number *</label>
-              {selectedService?.invoicePrefix && (
-                <p className="text-xs mb-1.5" style={{ color: 'var(--text-muted)' }}>
-                  Prefix hint for this service:&nbsp;
-                  <span className="font-mono px-1.5 py-0.5 rounded text-xs" style={{ background: 'var(--bg-elevated)', color: 'var(--accent-primary)' }}>
-                    {selectedService.invoicePrefix}
-                  </span>
-                  &nbsp;— suggested format:&nbsp;
-                  <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>
-                    {selectedService.invoicePrefix}-00123
-                  </span>
-                </p>
-              )}
               <div className="relative">
                 <input
                   type="text" className="input pr-8" maxLength={50}
@@ -186,6 +174,11 @@ export default function CreateProjectPage(): React.ReactElement {
               )}
               {invoiceStatus === 'taken' && (
                 <p className="text-xs mt-1 text-red-400">✗ This invoice number is already in use</p>
+              )}
+              {selectedService?.invoicePrefix && invoiceNumber === `${selectedService.invoicePrefix}-` && (
+                <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                  Prefix auto-filled — type the unique suffix after the dash
+                </p>
               )}
             </div>
 
@@ -209,7 +202,11 @@ export default function CreateProjectPage(): React.ReactElement {
               )}
               <div className="space-y-2 mt-2">
                 {services.filter(s => s.isActive).map((s) => (
-                  <div key={s.id} onClick={() => { setSelectedService(s); setInvoiceStatus('idle'); setInvoiceNumber(''); }}
+                  <div key={s.id} onClick={() => {
+                    setSelectedService(s);
+                    setInvoiceStatus('idle');
+                    setInvoiceNumber(s.invoicePrefix ? `${s.invoicePrefix}-` : '');
+                  }}
                     className={`card-sm cursor-pointer transition-all ${selectedService?.id === s.id ? 'border-blue-500 bg-blue-500/10' : ''}`}
                     style={{ borderColor: selectedService?.id === s.id ? '#3B82F6' : 'var(--border-default)' }}>
                     <div className="flex items-center justify-between">

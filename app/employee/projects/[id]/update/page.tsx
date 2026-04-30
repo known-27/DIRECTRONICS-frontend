@@ -7,7 +7,7 @@ import { projectsApi, uploadsApi } from '@/lib/api';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { LoadingSpinner, ErrorState } from '@/components/ui/LoadingStates';
 import FileUpload from '@/components/ui/FileUpload';
-import { ArrowLeft, Save, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Save, CheckCircle2, ArrowRight, Copy, Check } from 'lucide-react';
 import Link from 'next/link';
 import type { Project } from '@/types';
 
@@ -18,6 +18,7 @@ export default function UpdateProjectPage(): React.ReactElement {
   const [imageUrl, setImageUrl]     = useState<string | null>(null);
   const [apiError, setApiError]     = useState<string | null>(null);
   const [savedReady, setSavedReady] = useState(false);
+  const [copied, setCopied]         = useState(false);
 
   const { data, isLoading, error } = useQuery<{ data: Project }>({
     queryKey: ['project', id],
@@ -60,6 +61,31 @@ export default function UpdateProjectPage(): React.ReactElement {
     );
   }
   const startDateStr = project.startDate.split('T')[0];
+
+  // Format as DD-MM-YYYY for display (matching what the UI shows)
+  const [y, m, d]    = startDateStr.split('-');
+  const startDateDisplay = `${d}-${m}-${y}`;
+
+  const copyStartDate = () => {
+    navigator.clipboard.writeText(startDateDisplay).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  // Accept pasted dates in DD-MM-YYYY format (what the copy button copies)
+  // and convert to YYYY-MM-DD required by <input type="date">
+  const handleFinishDatePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const raw = e.clipboardData.getData('text').trim();
+    // Match DD-MM-YYYY
+    const match = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+    if (match) {
+      e.preventDefault();
+      const converted = `${match[3]}-${match[2]}-${match[1]}`; // YYYY-MM-DD
+      setFinishDate(converted);
+    }
+    // Otherwise let the browser handle it natively
+  };
 
   const handleSave = () => {
     if (!finishDate) { setApiError('Please select a finish date'); return; }
@@ -112,7 +138,27 @@ export default function UpdateProjectPage(): React.ReactElement {
         <div className="card space-y-5">
           <div>
             <label className="label">Start Date</label>
-            <input type="date" className="input bg-slate-800/50" value={startDateStr} readOnly disabled />
+            <div className="flex items-center gap-2">
+              <div
+                className="input bg-slate-800/50 flex-1 select-text cursor-text"
+                style={{ userSelect: 'text' }}
+              >
+                {startDateDisplay}
+              </div>
+              <button
+                type="button"
+                onClick={copyStartDate}
+                title="Copy start date"
+                className="flex items-center justify-center w-10 h-10 rounded-lg transition-colors"
+                style={{
+                  background: copied ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)',
+                  border:     copied ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(255,255,255,0.08)',
+                  color:      copied ? '#34d399' : '#94a3b8',
+                }}
+              >
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+              </button>
+            </div>
             <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Set at project creation — cannot change</p>
           </div>
 
@@ -124,7 +170,11 @@ export default function UpdateProjectPage(): React.ReactElement {
               max={new Date().toISOString().split('T')[0]}
               value={finishDate}
               onChange={(e) => setFinishDate(e.target.value)}
+              onPaste={handleFinishDatePaste}
             />
+            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+              You can paste a date in <span style={{ color: 'var(--text-subtle, #64748b)' }}>DD-MM-YYYY</span> format directly
+            </p>
           </div>
 
           <FileUpload
