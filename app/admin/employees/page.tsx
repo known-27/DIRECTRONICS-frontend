@@ -9,7 +9,7 @@ import { Modal } from '@/components/ui/Modal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { LoadingSpinner, EmptyState, ErrorState } from '@/components/ui/LoadingStates';
 
-import { Plus, Users, ChevronRight, X, ExternalLink, User, Wrench } from 'lucide-react';
+import { Plus, Users, X, User, Wrench } from 'lucide-react';
 import { PasswordInput } from '@/components/ui/PasswordInput';
 import Link from 'next/link';
 import type { User, Service, Formula, UserDetail } from '@/types';

@@ -11,7 +11,7 @@ import FilterBar from '@/components/ui/FilterBar';
 import ExportPDFButton from '@/components/ui/ExportPDFButton';
 import { FolderKanban, Eye, CheckSquare, XSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import type { Project, User, Service, PaginatedData, FilterState } from '@/types';
+import type { Project, User, Service, PaginatedData } from '@/types';
 import type { AxiosError } from 'axios';
 import { useFilterState } from '@/hooks/useFilterState';
 

@@ -11,7 +11,7 @@ import ExportPDFButton from '@/components/ui/ExportPDFButton';
 import { PaymentDrawer } from '@/components/payments/PaymentDrawer';
 import { CreditCard } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatCurrency';
-import type { Payment, User, PaginatedData, FilterState } from '@/types';
+import type { Payment, User, PaginatedData } from '@/types';
 import { useFilterState } from '@/hooks/useFilterState';
 
 export default function AdminPaymentsPage(): React.ReactElement {

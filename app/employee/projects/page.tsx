@@ -11,7 +11,7 @@ import FilterBar from '@/components/ui/FilterBar';
 import ExportPDFButton from '@/components/ui/ExportPDFButton';
 import { FolderKanban, Plus, Trash2, Eye, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import type { Project, Service, PaginatedData, FilterState } from '@/types';
+import type { Project, Service, PaginatedData } from '@/types';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useFilterState } from '@/hooks/useFilterState';
 
